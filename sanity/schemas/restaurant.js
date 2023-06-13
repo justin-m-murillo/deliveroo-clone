@@ -17,24 +17,34 @@ export default {
     },
     {
       name: 'image',
-      type: 'image',
-      title: 'Image of the Restaurant',
-    },
-    {
-      name: 'lat',
-      type: 'number',
-      title: 'Latitude of the Restaurant',
-    },
-    {
-      name: 'long',
-      type: 'number',
-      title: 'Longitude of the Restaurant',
+      type: 'array',
+      title: 'Images of the Restaurant',
+      of: [{ type: 'image', }],
     },
     {
       name: 'address',
       type: 'string',
       title: 'Restaurant address',
       validation: (Rule) => Rule.required(),
+    },
+    {
+      name: 'operation_hours',
+      type: 'array',
+      title: 'Hours',
+      of: [
+        {
+          type: 'object',
+          name: 'day',
+          title: 'Day Hours',
+          fields: [
+            { name: 'day', type: 'string', title: 'Day of the week',},
+            { name: 'start_time', type: 'string', title: 'Start time',},
+            { name: 'start_am', type: 'boolean', title: 'Start time is AM?', validation: Rule => Rule.required()},
+            { name: 'end_time', type: 'string', title: 'End time',},
+            { name: 'end_am', type: 'boolean', title: 'End time is AM?', validation: Rule => Rule.required()},
+          ],
+        }
+      ]
     },
     {
       name: 'rating',
@@ -46,10 +56,10 @@ export default {
         .error('Please enter a Value between 1 and 5'),
     },
     {
-      name: 'type',
-      type: 'reference',
-      to: [{ type: 'category' }],
+      name: 'genre',
+      type: 'array',
       title: 'Category',
+      of: [{ type: 'reference', to: [{ type: 'category' }] }],
       validation: (Rule) => Rule.required()
     },
     {

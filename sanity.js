@@ -1,7 +1,7 @@
 import { SanityClient } from "@sanity/client";
 import { ImageUrlBuilder } from "@sanity/image-url/lib/types/builder";
 
-import  defineCliConfig from "./sanity";
+import defineCliConfig from './sanity';
 
 const client = SanityClient({
   projectId: defineCliConfig.api.projectId,
