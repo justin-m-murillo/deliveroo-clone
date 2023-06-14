@@ -7,7 +7,7 @@ const client = SanityClient({
   projectId: defineCliConfig.api.projectId,
   dataset: defineCliConfig.api.dataset,
   useCdn: true,
-  apiVersion: "2023-6-13",
+  apiVersion: "2021-10-21",
 });
 
 const builder = ImageUrlBuilder(client);
