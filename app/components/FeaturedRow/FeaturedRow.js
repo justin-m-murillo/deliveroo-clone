@@ -1,9 +1,35 @@
-import { View, Text, ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { ArrowRightIcon } from 'react-native-heroicons/outline';
 import RestaurantCard from '../Restaurant/RestaurantCard';
+import sanityClient from '../../../sanity';
 
 const FeaturedRow = ({ id, title, description }) => {
+  const [restaurants, setRestaurants] = useState([])
+  //console.log(id);
+
+  useEffect(() => {
+    sanityClient.fetch(
+      `
+      *[_type == 'featured' && _id == $id] {
+        restaurants[]-> {
+          ...,
+          dishes[]->,
+          genre[]->,
+          "images": images[] {
+            "url": asset->url,
+          }
+        }
+      }
+      `,
+      { id }
+    ).then(data => {
+      setRestaurants(data[0]?.restaurants);
+    });
+  }, []);
+
+  
+  
   return (
     <View>
       <View className="mt-4 flex-row items-center justify-between px-4">
@@ -22,44 +48,20 @@ const FeaturedRow = ({ id, title, description }) => {
         className="mt-6"
       >
         {/* RestaurantCard */}
-        <RestaurantCard 
-          id={123}
-          imgUrl={`https://picsum.photos/seed/${Math.random()}/300`}
-          title="Yo Sushi!"
-          rating={4.5}
-          genre="Japanese"
-          address="123 Main St"
-          short_description="This is a test description"
-          dishes={[]}
-          long={20}
-          lat={0}
-        />
+        {restaurants?.map(restaurant => (
+          <RestaurantCard 
+            key={restaurant._id}
+            id={restaurant._id}
+            imgUrl={restaurant.images[0].url}
+            name={restaurant.name}
+            rating={restaurant.rating}
+            genre={restaurant.genre}
+            address={restaurant.address}
+            short_description={restaurant.short_description}
+            dishes={restaurant.dishes}
 
-        <RestaurantCard 
-          id={123}
-          imgUrl={`https://picsum.photos/seed/${Math.random()}/300`}
-          title="Yo Sushi!"
-          rating={4.5}
-          genre="Japanese"
-          address="123 Main St"
-          short_description="This is a test description"
-          dishes={[]}
-          long={20}
-          lat={0}
-        />
-
-        <RestaurantCard 
-          id={123}
-          imgUrl={`https://picsum.photos/seed/${Math.random()}/300`}
-          title="Yo Sushi!"
-          rating={4.5}
-          genre="Japanese"
-          address="123 Main St"
-          short_description="This is a test description"
-          dishes={[]}
-          long={20}
-          lat={0}
-        />
+          />
+        ))}
       </ScrollView>
     </View>
   );
